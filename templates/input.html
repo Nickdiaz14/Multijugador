@@ -64,20 +64,20 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ num: number, game: game}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                valid = true;
-                centisecondsElapsed = 700;
-                startTimer();
-                document.getElementById('number').value = ``;
-                if (data.flag) {
-                    document.getElementById('title').textContent = 'Ya tenemos ganador :(';
-                }
-                if (data.aproach === 1) {
-                    window.location.href = '/win'
-                }
-            });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    valid = true;
+                    centisecondsElapsed = 700;
+                    startTimer();
+                    document.getElementById('number').value = ``;
+                    if (data.flag) {
+                        document.getElementById('title').textContent = 'Ya tenemos ganador :(';
+                    }
+                    if (data.aproach === 1) {
+                        window.location.href = `/win?game${game}`;
+                    }
+                });
             }
         }
     </script>

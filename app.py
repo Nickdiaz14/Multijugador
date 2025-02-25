@@ -13,6 +13,24 @@ def games():
     if game == '1':
         valid, aproach = tendencias(game,num)
     return jsonify({'flag': valid, 'aproach': aproach})
+
+@app.route('/delete', methods=['POST'])
+def games():
+    game = str(request.json['game'])
+    
+    connection = connect_db()
+    cursor = connection.cursor()
+
+    cursor.execute("""
+        DELETE FROM tendencias
+        WHERE board = %s""",(game,))
+
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    
+    return jsonify({'flag': 1})
 #--------------------------------------------------------------------------------------------------------------------
 @app.route('/')
 def index():
@@ -20,7 +38,8 @@ def index():
 
 @app.route('/win')
 def win_page():
-    return render_template('win.html')
+    game = request.args.get('game')
+    return render_template('win.html',game=game)
 
 @app.route('/input')
 def input_page():
