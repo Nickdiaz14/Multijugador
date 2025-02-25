@@ -15,7 +15,7 @@ def games():
     return jsonify({'flag': valid, 'aproach': aproach})
 
 @app.route('/delete', methods=['POST'])
-def games():
+def delete():
     game = str(request.json['game'])
     
     connection = connect_db()
