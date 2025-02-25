@@ -7,9 +7,33 @@ import os
 app = Flask(__name__)
 
 @app.route('/games', methods=['POST'])
-def tendencia():
+def games():
     game = str(request.json['game'])
     num = float(request.json['num'])
+    if game == '1':
+        valid, aproach = tendencias(game,num)
+    return jsonify({'flag': valid, 'aproach': aproach})
+#--------------------------------------------------------------------------------------------------------------------
+@app.route('/')
+def index():
+    return render_template('menu.html')
+
+@app.route('/win')
+def win_page():
+    return render_template('win.html')
+
+@app.route('/input')
+def input_page():
+    game = request.args.get('game')
+    return render_template('input.html',game=game)
+
+@app.route('/leaderboard')
+def leader_page():
+    game = request.args.get('game')
+    return render_template('leaderboard.html',data=json.dumps(get_top_scores(game)))
+
+#----------------------------------------------------------------------------------------------------------------------------------------
+def tendencias(game,num):
     valid = True
     aproach = -1
     connection = connect_db()
@@ -60,27 +84,8 @@ def tendencia():
     connection.commit()
     cursor.close()
     connection.close()
-    return jsonify({'flag': valid, 'aproach': aproach})
-#--------------------------------------------------------------------------------------------------------------------
-@app.route('/')
-def index():
-    return render_template('menu.html')
+    return valid, aproach
 
-@app.route('/win')
-def win_page():
-    return render_template('win.html')
-
-@app.route('/input')
-def input_page():
-    game = request.args.get('game')
-    return render_template('input.html',game=game)
-
-@app.route('/leaderboard')
-def leader_page():
-    game = request.args.get('game')
-    return render_template('leaderboard.html',data=json.dumps(get_top_scores(game)))
-
-#----------------------------------------------------------------------------------------------------------------------------------------
 # Conectar a Supabase
 def connect_db():
     return psycopg2.connect(

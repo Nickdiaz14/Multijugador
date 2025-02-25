@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.6">
+    <title>Menu</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div style="text-align:center;">
+        <h1 id="title" style="font-size: 60px; font-weight: bold;">¡Bienvenido a la celebración del día Pi!</h1>
+    </div>
+    <div style="text-align:center; margin: 20px;">
+        <h1 id="title1" style="font-size: 26px; font-weight: bold;">Juegos</h1>
+        <select id="game" style="padding: 1px; font-size: 26px; font-weight: bold;text-align: center; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" onchange="handleGameChange()">
+            <option value="1" selected>Tendencia</option>
+            <option value="2">Picas y fijas</option>
+        </select>
+    </div>
+    <div style="text-align:center;">
+        <button onclick="toggleInfo()" class="resolver evaluar" style="margin-bottom: 10px; margin-left: 210px; padding: 15px 30px; font-size: 20px; border-radius: 12px; cursor: pointer;">Reglas</button>
+        <div id="algorithm-info" style="text-align: left; margin-bottom: 10px; display: none; padding: 15px; border-radius: 8px;"></div>
+        <!-- Menú Juego 1 (0h-h1) -->
+        <div id="game1-menu" style="text-align:center;">
+            <div class="botones">
+                <button onclick="redirectToGame()" class="resolver azulito">Juego</button>
+                <button onclick="redirectToBoard()" class="resolver rojito">Tablero</button>
+            </div>
+        </div>
+    <script>
+        function redirectToGame() {
+            const gameValue = document.getElementById("game").value;
+            location.href = `/input?game=${gameValue}`;
+        }
+        function redirectToBoard() {
+            const gameValue = document.getElementById("game").value;
+            location.href = `/leaderboard?game=${gameValue}`;
+        }
+    </script>
+</body>
+</html>
