@@ -60,7 +60,7 @@
             }
             const number = document.getElementById('number').value;
 
-            if (number.length === 4) {
+            if (number) {
                 fetch('/games', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

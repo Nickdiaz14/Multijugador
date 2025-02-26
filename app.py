@@ -12,19 +12,19 @@ def games():
     num = request.json['num']
     if game == '1':
         valid, aproach = tendencias(game,num)
+    else:
+        valid, aproach = p_y_f(game,num)
     return jsonify({'flag': valid, 'aproach': aproach})
 
 @app.route('/delete', methods=['POST'])
 def delete():
     game = str(request.json['game'])
-    print(game)
     connection = connect_db()
     cursor = connection.cursor()
 
     cursor.execute("""
         DELETE FROM tendencias
         WHERE board = %s""",(game,))
-    print("Filas eliminadas:", cursor.rowcount)
     connection.commit()
     cursor.close()
     connection.close()
@@ -87,19 +87,19 @@ def p_y_f(game,num):
             
             oficial_num = cursor.fetchone()
 
-        oficial_num = oficial_num[0]
+        oficial_num = str(oficial_num[0])
         for i in range(4):
             aproach+=abs(int(oficial_num[i]) - int(num[i]))
 
         count_spades,count_fixed=0,0
         array_fixed=[]
         for i in range(4):
-            if num[i]==num[i]:
+            if num[i]==oficial_num[i]:
                 count_fixed+=1
                 array_fixed.append(num[i])
-            elif (num[i] in num) & (num[i:].count(num[i])==1) & (num[i] not in array_fixed):
+            elif (num[i] in oficial_num) & (num[i:].count(num[i])==1) & (num[i] not in array_fixed):
                 count_spades+=1
-
+        print()
         cursor.execute("""
             INSERT INTO tendencias (number, aproach, percentage, color, board)
             VALUES (%s, %s, %s, %s, %s);""",(int(num), aproach, count_spades, count_fixed,game))
@@ -200,7 +200,7 @@ def get_top_scores_picas(game):
     cursor = connection.cursor()
 
     cursor.execute("""
-        SELECT number, percentage, color
+        SELECT CAST(number AS INTEGER) AS number, percentage, color
         FROM public.tendencias
         WHERE aproach != -1 AND board = %s
         ORDER BY aproach ASC
@@ -208,7 +208,6 @@ def get_top_scores_picas(game):
     """,(game,))
 
     results = cursor.fetchall()
-
     cursor.close()
     connection.close()
     
