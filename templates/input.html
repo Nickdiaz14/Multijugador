@@ -59,7 +59,8 @@
                 return
             }
             const number = document.getElementById('number').value;
-            if (number) {
+
+            if (number.length === 4) {
                 fetch('/games', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

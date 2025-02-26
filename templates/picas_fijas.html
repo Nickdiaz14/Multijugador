@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=0.9, user-scale=no, maximum-scale=0.9">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+        <title>Leaderboards</title>
+    </head>
+    <body>
+        <div class="js-container container" style="top:0px !important;">
+            <div id="leaderboard" style="text-align: center;margin-top: 20px;"></div>
+            <div style="text-align:center;" class="botones">
+                <button onclick="location.href=`/`" class= "resolver evaluar">Volver</button>
+            </div>
+        </div>
+        <script>
+            const data = JSON.parse('{{ data | safe }}');
+
+            function reset() {
+                let leaderboardDiv = document.getElementById('leaderboard');
+                leaderboardDiv.innerHTML = '';
+                let table = document.createElement('table');
+                table.classList.add("leaderboard");
+                let leaderboardData = data;
+        
+                table.innerHTML = `
+                    <tr>
+                        <th>Número</th>
+                        <th>Picas</th>
+                        <th>Fijas</th>
+                    </tr>
+                `;
+        
+                leaderboardData.forEach((entry, index) => {
+                    let row = document.createElement('tr');
+        
+                    row.innerHTML = `
+                        <td class="tipo2"">${entry[0]}</td>
+                        <td class="tipo2" style="color: ${entry[2]}">${entry[1]}</td>
+                    `;
+                    table.appendChild(row);
+                });
+        
+                leaderboardDiv.appendChild(table);
+            }
+
+            function updateLeaderboard() {
+                fetch(window.location.href)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, "text/html");
+                        const newData = JSON.parse(doc.querySelector("script").innerHTML.match(/JSON\.parse\('(.+)'\)/)[1].replace(/\\'/g, "'"));
+                        Object.assign(data, newData);
+                        reset();
+                    })
+                    .catch(error => console.error("Error al actualizar el leaderboard:", error));
+            }
+            reset();
+            setInterval(updateLeaderboard, 1000);
+        </script>
+    </body>
+    </html>
