@@ -52,7 +52,7 @@ def leader_page():
     if game == '1':
         return render_template('leaderboard.html',data=json.dumps(get_top_scores(game)))
     else:
-        return render_template('leaderboard.html',data=json.dumps(get_top_scores_picas(game)))
+        return render_template('picas_fijas.html',data=json.dumps(get_top_scores_picas(game)))
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 def p_y_f(game,num):
