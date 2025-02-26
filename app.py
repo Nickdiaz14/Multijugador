@@ -17,14 +17,14 @@ def games():
 @app.route('/delete', methods=['POST'])
 def delete():
     game = str(request.json['game'])
-    
+    print(game)
     connection = connect_db()
     cursor = connection.cursor()
 
     cursor.execute("""
         DELETE FROM tendencias
         WHERE board = %s""",(game,))
-
+    print("Filas eliminadas:", cursor.rowcount)
     connection.commit()
     cursor.close()
     connection.close()
