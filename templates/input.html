@@ -13,6 +13,7 @@
     {% else %}
     <h1 style="font-size: 30px;margin-top: 15px; font-weight: bold; margin-right: 10px;">De 4 cifras</h1>
     {% endif %}
+    <h1 id="observ" for="matrix-size" style="font-size: 20px; font-weight: bold; color: #f00"></h1>
     <div style="text-align:center; margin: 20px;">
         <h1 id="timer" style="font-size: 25px; font-weight: bold;">00:00.00</h1>
     </div>
@@ -60,7 +61,12 @@
             }
             const number = document.getElementById('number').value;
 
-            if (number) {
+            if (Number.isInteger(Number(number))) {
+                if ((game === '2') && (number.length !== 4)) {
+                    document.getElementById('observ').textContent = 'Ingrese un número de 4 cifras';
+                    return
+                }
+                document.getElementById('observ').textContent = '';
                 fetch('/games', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -74,11 +80,16 @@
                     document.getElementById('number').value = ``;
                     if (data.flag) {
                         document.getElementById('title').textContent = 'Ya tenemos ganador :(';
+                        window.location.href = `/`;
                     }
-                    if (data.aproach === 1) {
+                    if (((data.aproach === 1) && (game === '1')) || ((data.aproach === 0) && (game === '2'))) {
                         window.location.href = `/win?game=${game}`;
                     }
                 });
+            }
+            else {
+                document.getElementById('observ').textContent = 'Ingrese un número entero';
+                return
             }
         }
     </script>
