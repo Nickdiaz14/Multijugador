@@ -8,13 +8,22 @@
     </head>
     <body>
         <div class="js-container container" style="top:0px !important;">
-            <div id="leaderboard" style="text-align: center;margin-top: 20px;"></div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+                {% if game == 1 %}
+                    <img id="image" src="{{ url_for('static', filename='images/Tendencias-1024.png') }}" style="width: 820px;">
+                {% else %}
+                    <img id="image" src="{{ url_for('static', filename='images/Picas_y_fijas-1024.png') }}" style="width: 820px;">
+                {% endif %}
+                <div id="leaderboard" style="text-align: center;"></div>
+            </div>
             <div style="text-align:center;" class="botones">
-                <button onclick="location.href=`/`" class= "resolver evaluar">Volver</button>
+                <button onclick="location.href=`/`" class="resolver evaluar">Volver</button>
             </div>
         </div>
+    </body>
         <script>
             const data = JSON.parse('{{ data | safe }}');
+            const game = '{{ game }}'
 
             function reset() {
                 let leaderboardDiv = document.getElementById('leaderboard');
@@ -23,23 +32,46 @@
                 table.classList.add("leaderboard");
                 let leaderboardData = data;
         
-                table.innerHTML = `
+                table.innerHTML = game === '1' ?`
                     <tr>
                         <th>Número</th>
                         <th>Proporción</th>
+                    </tr>
+                `:`
+                    <tr>
+                        <th>Número</th>
+                        <th>Picas</th>
+                        <th>Fijas</th>
                     </tr>
                 `;
         
                 leaderboardData.forEach((entry, index) => {
                     let row = document.createElement('tr');
         
-                    row.innerHTML = `
+                    row.innerHTML = game === '1'?`
                         <td class="tipo2"">${entry[0]}</td>
                         <td class="tipo2" style="color: ${entry[2]}">${entry[1]}</td>
+                    `:`
+                        <td class="tipo2">${entry[0]}</td>
+                        <td class="tipo2">${entry[1]}</td>
+                        <td class="tipo2">${entry[2]}</td>
                     `;
                     table.appendChild(row);
                 });
         
+                // Asegurar al menos 10 filas vacías si no hay suficientes datos
+                while (table.rows.length < 11) { // 1 para el encabezado + 10 filas de datos
+                    let emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = game === '1' ? `
+                        <td class="tipo2">-</td>
+                        <td class="tipo2">-</td>
+                    ` : `
+                        <td class="tipo2">-</td>
+                        <td class="tipo2">-</td>
+                        <td class="tipo2">-</td>
+                    `;
+                    table.appendChild(emptyRow);
+                }
                 leaderboardDiv.appendChild(table);
             }
 
@@ -58,5 +90,4 @@
             reset();
             setInterval(updateLeaderboard, 1000);
         </script>
-    </body>
     </html>

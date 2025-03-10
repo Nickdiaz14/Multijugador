@@ -48,11 +48,11 @@ def input_page():
 
 @app.route('/leaderboard')
 def leader_page():
-    game = request.args.get('game')
-    if game == '1':
-        return render_template('leaderboard.html',data=json.dumps(get_top_scores(game)))
+    game = int(request.args.get('game'))
+    if game == 1:
+        return render_template('leaderboard.html',data=json.dumps(get_top_scores(str(game))),game=game)
     else:
-        return render_template('picas_fijas.html',data=json.dumps(get_top_scores_picas(game)))
+        return render_template('leaderboard.html',data=json.dumps(get_top_scores_picas(str(game))),game=game)
 
 #----------------------------------------------------------------------------------------------------------------------------------------
 def p_y_f(game,num):
@@ -88,8 +88,6 @@ def p_y_f(game,num):
             oficial_num = cursor.fetchone()
 
         oficial_num = str(oficial_num[0])
-        for i in range(4):
-            aproach+=abs(int(oficial_num[i]) - int(num[i]))
 
         count_spades,count_fixed=0,0
         array_fixed=[]
@@ -99,7 +97,9 @@ def p_y_f(game,num):
                 array_fixed.append(num[i])
             elif (num[i] in oficial_num) & (num[i:].count(num[i])==1) & (num[i] not in array_fixed):
                 count_spades+=1
-        print()
+        
+        aproach = 0.5*count_spades + count_fixed
+        print(f'0.5*{count_spades} + {count_fixed} = {aproach}')
         cursor.execute("""
             INSERT INTO tendencias (number, aproach, percentage, color, board)
             VALUES (%s, %s, %s, %s, %s);""",(int(num), aproach, count_spades, count_fixed,game))
@@ -107,6 +107,7 @@ def p_y_f(game,num):
     connection.commit()
     cursor.close()
     connection.close()
+    print("ayuda")
     return valid, aproach
 
 def tendencias(game,num):
@@ -203,7 +204,7 @@ def get_top_scores_picas(game):
         SELECT CAST(number AS INTEGER) AS number, percentage, color
         FROM public.tendencias
         WHERE aproach != -1 AND board = %s
-        ORDER BY aproach ASC
+        ORDER BY aproach DESC
         LIMIT 10;
     """,(game,))
 
