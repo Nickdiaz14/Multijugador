@@ -82,7 +82,7 @@
                         document.getElementById('title').textContent = 'Ya tenemos ganador :(';
                         window.location.href = `/`;
                     }
-                    if (((data.aproach === 1) && (game === '1')) || ((data.aproach === 0) && (game === '2'))) {
+                    if (((data.aproach === 1) && (game === '1')) || ((data.aproach === 4) && (game === '2'))) {
                         window.location.href = `/win?game=${game}`;
                     }
                 });
