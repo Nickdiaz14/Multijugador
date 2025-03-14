@@ -64,7 +64,7 @@ def p_y_f(game,num):
     
     cursor.execute("""
         SELECT number FROM public.tendencias
-        WHERE aproach = 0 AND board = %s""",(game,))
+        WHERE aproach = 4 AND board = %s""",(game,))
     
     flag = cursor.fetchone()
 
