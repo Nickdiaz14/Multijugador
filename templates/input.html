@@ -75,7 +75,7 @@
                 .then(response => response.json())
                 .then(data => {
                     valid = true;
-                    centisecondsElapsed = 700;
+                    centisecondsElapsed = 500;
                     startTimer();
                     document.getElementById('number').value = ``;
                     if (data.flag) {
